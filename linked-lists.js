@@ -142,12 +142,10 @@ const linkedLists = () => {
     let contains = contain;
     let string = "";
 
-    // fix this
-    contains({ value: null })
-      .getArr()
-      .forEach((element) => {
-        string += `( ${element} ) -> `;
-      });
+    while (tmp !== null) {
+      string += `( ${tmp.ky} ) -> `;
+      tmp = tmp.next;
+    }
     string += null;
 
     return string;
