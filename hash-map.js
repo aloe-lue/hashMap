@@ -1,7 +1,3 @@
-import linkedLists from "./linked-lists.js";
-import Node from "./node.js";
-import Bucket from "./buckets.js";
-
 const HashMap = () => {
   const hash = ({ key }) => {
     let hashCode = 0;
@@ -17,11 +13,37 @@ const HashMap = () => {
     return hashCode;
   };
 
-  const set = ({ key, value, Node }) => {
+  const set = ({ key, value, Node, mybuckets, hashFunc, linkedLists }) => {
     const ky = key,
       val = value,
       linkedListsAsBucket = linkedLists(),
-      node = Node;
+      node = Node,
+      buckets = mybuckets,
+      hashF = hashFunc;
+
+    const hashCode = hashF({ key: ky });
+    const bucket = buckets.getBuckets()[hashCode];
+
+    buckets.updateBucketList({ newBucket: bucket, newKey: ky, newValue: val });
+
+    buckets.addBucketList({
+      newBucket: bucket,
+      newKey: ky,
+      newValue: val,
+      Node: node,
+    });
+
+    buckets.createBucket({
+      newBucket: bucket,
+      newKey: ky,
+      newValue: val,
+      theBuckets: buckets.getBuckets(),
+      newHashCode: hashCode,
+      Node: node,
+      linkedLists,
+    });
+
+    return buckets.getBuckets();
   };
 
   const get = ({ key }) => {};
@@ -32,7 +54,7 @@ const HashMap = () => {
   const values = () => {};
   const entries = () => {};
 
-  return { set, get, has, remove, length, keys, values, entries };
+  return { hash, set, get, has, remove, length, keys, values, entries };
 };
 
 export default HashMap;
