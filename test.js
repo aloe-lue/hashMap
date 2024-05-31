@@ -1,29 +1,31 @@
-import linkedlists from "./linked-lists.js";
+import linkedLists from "./linked-lists.js";
 import Node from "./node.js";
-import { set, buckets, hash } from "./hash-map.js";
+import HashMap from "./hash-map.js";
+import Buckets from "./buckets.js";
 
 const testVal = [
   { key: "carlos", value: "im the old value" },
-  { key: "carla", value: "im carla" },
-  { key: "carlos", value: "im carlos" },
-  { key: "jeffrey", value: "im jeffrey" },
-  { key: "jana", value: "im jeeena" },
-  { key: "alexis", value: "alexis" },
-  { key: "selena", value: "seeelina" },
-  { key: "jona", value: "juna" },
-  { key: "jena", value: "jena" },
-  { key: "jina", value: "jina" },
-  { key: "jana", value: "jana" },
-  { key: "naja", value: "jana" },
+  { key: "carlos", value: "im the new value" },
+  { key: "carlos", value: "im the new new value" },
+
+  { key: "selena", value: "nahh bruh" },
+  { key: "jena", value: "naahh uhh" },
+  { key: "jena", value: "ora ora ora" },
+  { key: "selena", value: "my name is selena" },
 ];
 
-const testLoop = ({ testVals, setFunc }) => {
-  let arr = testVals;
-  let set = setFunc;
+const hashMap = HashMap();
+const buckets = Buckets();
 
-  arr.forEach((item) => {
-    console.log(set({ key: item.key, value: item.value }));
-  })
-};
+testVal.forEach((item) => {
+  hashMap.set({
+    key: item.key,
+    value: item.value,
+    Node,
+    mybuckets: buckets,
+    hashFunc: hashMap.hash,
+    linkedLists,
+  });
 
-testLoop({ testVals: testVal, setFunc: set });
+  console.log(buckets.getBuckets()[hashMap.hash({ key: item.key })].getLists());
+});
