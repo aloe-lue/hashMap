@@ -112,10 +112,10 @@ const linkedLists = () => {
         bool = true;
       }
       tmp = tmp.next;
-    }
+    };
 
     return bool; 
-  };
+  }
 
   const find = ({ value }) => {
     let val = value;
@@ -199,6 +199,24 @@ const linkedLists = () => {
     return returnVal;
   };
 
+  const set = ({ value, assignVal }) => {
+    const val = value;
+    let tmp = lists;
+    let count = 0;
+
+    if (tmp === null) {
+      return tmp;
+    }
+
+    while (tmp !== null) {
+      if (tmp.ky === val) {
+        tmp.val = assignVal;
+      };
+      count++;
+      tmp = tmp.next;
+    }
+  };
+
   return {
     getLists,
     append,
@@ -213,6 +231,7 @@ const linkedLists = () => {
     ToString,
     insertAt,
     removeAt,
+    set,
   };
 };
 
