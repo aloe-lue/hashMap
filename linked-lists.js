@@ -63,16 +63,22 @@ const linkedLists = () => {
   const at = ({ index }) => {
     let tmp = lists;
     let aim = index;
+    let count = 0;
+    let idx = index;
 
     if (tmp === null) {
       return null;
     }
 
-    for (let i = 0; i < aim - 1; i++) {
-      tmp = tmp.next;
+    while (tmp !== null) {
+      if (idx === count) {
+        break;
+      }
+      count++
+      tmp = tmp.next
     }
 
-    return tmp.val;
+    return tmp;
   };
 
   const pop = ({ len }) => {
@@ -112,10 +118,10 @@ const linkedLists = () => {
         bool = true;
       }
       tmp = tmp.next;
-    };
+    }
 
-    return bool; 
-  }
+    return bool;
+  };
 
   const find = ({ value }) => {
     let val = value;
@@ -129,12 +135,15 @@ const linkedLists = () => {
       return count;
     }
 
-    while (tmp.next !== null) {
-      tmp = tmp.next;
+    while (tmp !== null) {
+      if (tmp.ky === val) {
+        break;
+      }
       count++
-    };
+      tmp = tmp.next;
+    }
 
-    return count; 
+    return count;
   };
 
   const ToString = ({ contain }) => {
@@ -153,7 +162,7 @@ const linkedLists = () => {
 
   const insertAt = ({ key, value, index, node }) => {
     let val = value;
-    let ky = key
+    let ky = key;
     let idx = index;
     let nodes = node;
     let count = 0;
@@ -188,15 +197,18 @@ const linkedLists = () => {
     if (curr === null) {
       return null;
     }
+    if (idx === 0) {
+      lists = curr.next;
+      return lists;
+    }
+
     while (count !== idx) {
       count++;
       prev = curr;
       curr = curr.next;
     }
-    returnVal = curr;
     prev.next = curr.next;
-
-    return returnVal;
+    return prev;
   };
 
   const set = ({ value, assignVal }) => {
@@ -211,7 +223,7 @@ const linkedLists = () => {
     while (tmp !== null) {
       if (tmp.ky === val) {
         tmp.val = assignVal;
-      };
+      }
       count++;
       tmp = tmp.next;
     }
