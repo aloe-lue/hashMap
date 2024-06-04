@@ -1,5 +1,9 @@
+import buckets from "./buckets.js";
+import linkedLists from "./linked-lists.js";
+import Node from "./node.js";
+
 const HashMap = () => {
-  const hash = ({ key }) => {
+  const hash = (key) => {
     let hashCode = 0;
     let ky = key;
 
@@ -17,96 +21,48 @@ const HashMap = () => {
     return hashCode;
   };
 
-  const set = ({ key, value, }, { Node, mybuckets, hashFunc, linkedLists }) => {
-    const ky = key,
-      val = value,
-      linkedListsAsBucket = linkedLists(),
-      node = Node,
-      buckets = mybuckets,
-      hashF = hashFunc;
+  const set = (key, value) => {
+    let ky = key,
+      val = value;
 
-    // reuse code when creating a bucket
-    const hashCode = hashF({ key: ky });
-    const bucket = buckets.getBuckets()[hashCode];
+    const hashCode = hash(ky);
+    const bucket = buckets[hashCode];
+    const bucketAsLinkedLists = linkedLists();
 
-    buckets.updateBucketList({ newBucket: bucket, newKey: ky, newValue: val });
+    if (bucket !== undefined && bucket.contain) {
+      if (bucket.contain({ value: ky })) {
+        bucket.set({ value: ky, assignVal: val });
+        return bucket;
+      }
 
-    // handle collision
-    buckets.addBucketList({
-      newBucket: bucket,
-      newKey: ky,
-      newValue: val,
-      Node: node,
-    });
+      if (!bucket.contain({ value: ky })) {
+        bucket.append({ value: val, key: ky, node: Node });
+        return bucket;
+      }
 
-    // create bucket
-    buckets.createBucket({
-      newBucket: bucket,
-      newKey: ky,
-      newValue: val,
-      theBuckets: buckets.getBuckets(),
-      newHashCode: hashCode,
-      Node: node,
-      linkedLists,
-    });
-
-    return buckets.getBuckets();
-  };
-
-  const get = ({ newKey }, { newBuckets, hashFunc, }) => {
-    const key = newKey,
-      buckets = newBuckets,
-      hashF = hashFunc;
-
-    const hashCode = hashF({ key }),
-      bucket = buckets.getBuckets()[hashCode];
-
-    if (bucket === undefined) {
-      return null;
-    };
-
-    const index = bucket.find({ value: key }),
-      value = bucket.at({ index });
-
-    return value === null ? null : value.val;
-  };
-
-  const has = ({ newKey }, { newBuckets, hashFunc }) => {
-    const key = newKey,
-      buckets = newBuckets,
-      hashF = hashFunc;
-
-    const hashCode = hashF({ key }),
-      bucket = buckets.getBuckets()[hashCode];
-
-    if (bucket === undefined) {
-      return false;
+      return bucket;
     }
 
-    const index = bucket.find({ value: key });
-    const list = bucket.at({ index });
+    if (bucket !== undefined && bucket.ky !== ky) {
+      bucketAsLinkedLists.append({
+        key: bucket.ky,
+        value: bucket.val,
+        node: Node,
+      });
+      bucketAsLinkedLists.append({ key: ky, value: val, node: Node });
+      buckets[hashCode] = bucketAsLinkedLists;
 
-    return list !== null;
-  };
-
-  const remove = ({ newKey }, { newBuckets, hashFunc }) => {
-    const key = newKey,
-      buckets = newBuckets,
-      hashF = hashFunc;
-
-    const hashCode = hashF({ key }),
-      bucket = buckets.getBuckets()[hashCode];
-
-    if (bucket === undefined) {
-      return false;
+      return bucketAsLinkedLists;
     }
 
-    const index = bucket.find({ value: key }),
-      list = bucket.removeAt({ index });
-
-    return list === null;
+    // handle collission
+    buckets[hashCode] = { ky, val };
+    return buckets;
   };
 
+  const get = (key) => {};
+  const has = (key) => {};
+  const remove = (key) => {};
   const length = () => {};
   const keys = () => {};
   const values = () => {};
