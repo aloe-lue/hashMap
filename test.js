@@ -1,31 +1,48 @@
-import linkedLists from "./linked-lists.js";
-import Node from "./node.js";
+import buckets from "./buckets.js";
 import HashMap from "./hash-map.js";
-import Buckets from "./buckets.js";
-
-const testVal = [
-  { key: "carlos", value: "im the old value" },
-  { key: "carlos", value: "im the new value" },
-  { key: "carlos", value: "im the new new value" },
-
-  { key: "selena", value: "nahh bruh" },
-  { key: "jena", value: "naahh uhh" },
-  { key: "jena", value: "ora ora ora" },
-  { key: "selena", value: "my name is selena" },
-];
 
 const hashMap = HashMap();
-const buckets = Buckets();
 
-testVal.forEach((item) => {
-  hashMap.set({
-    key: item.key,
-    value: item.value,
-    Node,
-    mybuckets: buckets,
-    hashFunc: hashMap.hash,
-    linkedLists,
-  });
+const testDatas = [
+  // * handle the same key
+  { key: "Carlos", value: "I'm the old value" },
+  { key: "Carlos", value: "I'm the new value" },
 
-  console.log(buckets.getBuckets()[hashMap.hash({ key: item.key })].getLists());
-});
+  // * handle collission
+  { key: "Jena", value: "my name is Jena nice to meet you" },
+  { key: "Selena", value: "my name is Selena nice to meet you" },
+  { key: "Jena", value: "My name is Jena, Nice to meet you!" },
+  { key: "Selena", value: "My name is Selena, Nice to meet you!" },
+
+  { key: 'alexis', value: 'my name alexis' },
+  { key: 'alexis', value: 'I\'m supersmarto, and kindo' },
+  { key: 'alexis', value: 'im mcdonaldu and i serve peoples foodo' },
+  { key: 'alexis', value: 'im amara, im super great of balarino', },
+  { key: 'pena', value: ' pena desu' },
+  { key: 'pena', value: 'naruhodo' },
+  { key: 'pia', value: 'pia desu' },
+
+  { key: 'nica', value: 'im nica' },
+  { key: 'manok', value: 'my name is manok' },
+  { key: 'patu', value: ' pena desu' },
+  { key: 'naku', value: ' pena desu' },
+  { key: 'hatdok', value: ' pena desu' },
+
+];
+
+testDatas.forEach((data) => hashMap.set(data.key, data.value));
+
+console.log(
+  hashMap.remove('alexis'),
+  hashMap.get('alexis'),
+  hashMap.has('alexis'),
+
+  hashMap.remove('Carlos'),
+  hashMap.get('Carlos'),
+  hashMap.has('Carlos'),
+
+  hashMap.remove('Carlos'),
+
+
+  hashMap.get('pena'),
+);
