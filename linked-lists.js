@@ -3,6 +3,19 @@ const linkedLists = () => {
 
   const getLists = () => lists;
 
+  const getKeys = () => {
+    let tmp = lists;
+    let arr = [];
+    let i = 0;
+
+    while (tmp !== null) {
+      arr[i++] = tmp.ky;
+      tmp = tmp.next;
+    }
+
+    return arr;
+  };
+
   const append = ({ key, value, node }) => {
     let val = value;
     let nodes = node;
@@ -74,8 +87,8 @@ const linkedLists = () => {
       if (idx === count) {
         break;
       }
-      count++
-      tmp = tmp.next
+      count++;
+      tmp = tmp.next;
     }
 
     return tmp;
@@ -139,7 +152,7 @@ const linkedLists = () => {
       if (tmp.ky === val) {
         break;
       }
-      count++
+      count++;
       tmp = tmp.next;
     }
 
@@ -208,7 +221,8 @@ const linkedLists = () => {
       curr = curr.next;
     }
     prev.next = curr.next;
-    return prev;
+
+    return count;
   };
 
   const set = ({ value, assignVal }) => {
@@ -231,6 +245,7 @@ const linkedLists = () => {
 
   return {
     getLists,
+    getKeys,
     append,
     prepend,
     size,
