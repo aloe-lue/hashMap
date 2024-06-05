@@ -1,8 +1,21 @@
-import buckets from "./buckets.js";
 import linkedLists from "./linked-lists.js";
 import Node from "./node.js";
 
 const HashMap = () => {
+  let buckets = [];
+  const capacity = 16;
+  const load_factor = 0.75;
+
+  const getBuckets = () => buckets;
+
+  const restrictIndexAccess = () => {
+    let index = indexAccess;
+
+    if (index < 0 || index >= bucket.length) {
+      throw new Error("Trying to access index out of bound.");
+    }
+  };
+
   const hash = (key) => {
     let hashCode = 0;
     let ky = key;
@@ -12,10 +25,9 @@ const HashMap = () => {
     }
 
     const primeNumber = 31;
-    const num = 16;
 
     for (let i = 0; i < ky.length; i++) {
-      hashCode = (primeNumber * hashCode + ky.charCodeAt(i)) % num;
+      hashCode = (primeNumber * hashCode + ky.charCodeAt(i)) % capacity;
     }
 
     return hashCode;
@@ -28,13 +40,9 @@ const HashMap = () => {
     const hashCode = hash(ky);
     const bucket = buckets[hashCode];
     const bucketAsLinkedLists = linkedLists();
-    /**
-     * @info
-     * handle collisions and update values within linked lists
-     *   you want to use bucket.contain because using this method returns
-     *   undefined on using it when bucket is an object type.
-     */
+
     if (bucket !== undefined && bucket.contain) {
+      // update existing value within linked lists
       if (bucket.contain({ value: ky })) {
         bucket.set({ value: ky, assignVal: val });
         return bucket;
@@ -48,7 +56,7 @@ const HashMap = () => {
       return bucket;
     }
 
-    // when key generates the same hashCode but difference key
+    // handle collission using linked lists
     if (bucket !== undefined && bucket.ky !== ky) {
       bucketAsLinkedLists.append({
         key: bucket.ky,
@@ -114,23 +122,69 @@ const HashMap = () => {
 
     if (bucket.contain) {
       const index = bucket.find({ value: ky }),
-        value = bucket.removeAt({ index });
+        removedValue = bucket.removeAt({ index });
 
-      return !bucket.contain({ value: value.key })
+      return bucket.contain({ value: removedValue.ky });
     }
 
     buckets[hashCode] = undefined;
-    return bucket === undefined;
+    return buckets[hashCode] === undefined;
   };
 
   const length = () => {
+    let count = 0;
 
+    buckets.forEach((bucket) => {
+      // handle removed item
+      if (bucket === undefined) return;
+
+      if (bucket.ky) {
+        // count the number of keys
+        count++;
+      }
+
+      if (bucket.contain) {
+        // count the keys stored within linked lists
+        count += bucket.size().count;
+      }
+    });
+
+    return count;
   };
-  const keys = () => {};
+
+  const keys = () => {
+    let array = [];
+    let i = 0;
+
+    buckets.forEach((bucket) => {
+      if (bucket === undefined) return;
+
+      if (bucket.ky) {
+        array[i++] = bucket.ky
+      }
+
+      if (bucket.contain) {
+        // traverse the bucket within the linked lists and get only the keys
+      }
+    });
+
+    return array;
+  };
   const values = () => {};
   const entries = () => {};
 
-  return { hash, set, get, has, remove, length, keys, values, entries };
+  return {
+    getBuckets,
+    hash,
+    set,
+    get,
+    has,
+    remove,
+    length,
+    keys,
+    values,
+    entries,
+  };
 };
 
 export default HashMap;
