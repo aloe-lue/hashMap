@@ -164,12 +164,19 @@ const HashMap = () => {
       }
 
       if (bucket.contain) {
-        // traverse the bucket within the linked lists and get only the keys
+        const arr = bucket.getKeys();
+
+        for (let j = 0; j < arr.length; j++) {
+          let element = arr[j];
+
+          array[i++] = element;
+        }
       }
     });
 
     return array;
   };
+
   const values = () => {};
   const entries = () => {};
 
