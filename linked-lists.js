@@ -6,14 +6,40 @@ const linkedLists = () => {
   const getKeys = () => {
     let tmp = lists;
     let arr = [];
-    let i = 0;
+    let index = 0;
 
     while (tmp !== null) {
-      arr[i++] = tmp.ky;
+      arr[index++] = tmp.ky;
       tmp = tmp.next;
     }
 
     return arr;
+ };
+
+  const getValues = () => {
+    let tmp = lists;
+    let array = [];
+    let index = 0;
+
+    while (tmp !== null) {
+      array[index++] = tmp.val;
+      tmp = tmp.next;
+    }
+
+    return array;
+  };
+
+  const getEntries = () => {
+    let tmp = lists;
+    let array = [];
+    let index = 0;
+
+    while (tmp !== null) {
+      array[index++] = [ tmp.ky, tmp.val ];
+      tmp = tmp.next;
+    };
+
+    return array;
   };
 
   const append = ({ key, value, node }) => {
@@ -246,6 +272,8 @@ const linkedLists = () => {
   return {
     getLists,
     getKeys,
+    getValues,
+    getEntries,
     append,
     prepend,
     size,
