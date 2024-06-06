@@ -3,31 +3,29 @@ import Node from "./node.js";
 
 const HashMap = () => {
   let buckets = [];
-  const capacity = 16;
+  let initialCapacity = 16;
   const load_factor = 0.75;
 
-  const getBuckets = () => buckets;
-
-  const restrictIndexAccess = () => {
-    let index = indexAccess;
-
-    if (index < 0 || index >= bucket.length) {
-      throw new Error("Trying to access index out of bound.");
-    }
-  };
+  /**
+   * todo: use this function to restrict index accessing
+   *
+   * if (index < 0 || index >= bucket.length) {
+   *   throw new Error("Trying to access index out of bound.");
+   * }
+   */
 
   const hash = (key) => {
     let hashCode = 0;
     let ky = key;
 
     if (ky === undefined) {
-      return null;
+      throw new Error("Key shouldn't be left empty.");
     }
 
     const primeNumber = 31;
 
     for (let i = 0; i < ky.length; i++) {
-      hashCode = (primeNumber * hashCode + ky.charCodeAt(i)) % capacity;
+      hashCode = (primeNumber * hashCode + ky.charCodeAt(i)) % initialCapacity;
     }
 
     return hashCode;
@@ -138,15 +136,17 @@ const HashMap = () => {
       // handle removed item
       if (bucket === undefined) return;
 
-      if (bucket.ky) {
-        // count the number of keys
-        count++;
-      }
 
       if (bucket.contain) {
         // count the keys stored within linked lists
         count += bucket.size().count;
       }
+
+      if (bucket.ky) {
+        // count the number of keys
+        count++;
+      }
+
     });
 
     return count;
@@ -154,14 +154,11 @@ const HashMap = () => {
 
   const keys = () => {
     let array = [];
-    let i = 0;
+    let index = 0;
 
     buckets.forEach((bucket) => {
       if (bucket === undefined) return;
 
-      if (bucket.ky) {
-        array[i++] = bucket.ky
-      }
 
       if (bucket.contain) {
         const arr = bucket.getKeys();
@@ -169,19 +166,75 @@ const HashMap = () => {
         for (let j = 0; j < arr.length; j++) {
           let element = arr[j];
 
-          array[i++] = element;
+          array[index++] = element;
         }
       }
+
+      if (bucket.ky) {
+        array[index++] = bucket.ky;
+      }
+
     });
 
     return array;
   };
 
-  const values = () => {};
-  const entries = () => {};
+  const values = () => {
+    let array = [];
+    let index = 0;
+
+    buckets.forEach((bucket) => {
+      // handle removed bucket
+      if (bucket === undefined) return;
+
+
+      if (bucket.contain) {
+        const arr = bucket.getValues();
+
+        for (let j = 0; j < arr.length; j++) {
+          let element = arr[j];
+
+          array[index++] = element;
+        }
+      }
+
+      if (bucket.val) {
+        array[index++] = bucket.val;
+      }
+
+    });
+
+    return array;
+  };
+
+  const entries = () => {
+    let array = [];
+    let index = 0;
+
+    buckets.forEach((bucket) => {
+      if (bucket === undefined) return;
+
+
+      if (bucket.contain) {
+        let arr = bucket.getEntries();
+
+        for (let j = 0; j < arr.length; j++) {
+          let element = arr[j];
+
+          array[index++] = element;
+        }
+      }
+
+      if (bucket.ky && bucket.val) {
+        array[index++] = [bucket.ky, bucket.val];
+      }
+
+    });
+
+    return array;
+  };
 
   return {
-    getBuckets,
     hash,
     set,
     get,
