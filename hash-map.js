@@ -2,17 +2,24 @@ import linkedLists from "./linked-lists.js";
 import Node from "./node.js";
 
 const HashMap = () => {
+  const loadFactor = 0.75;
+  let capacity = 16;
   let buckets = [];
-  let initialCapacity = 16;
-  const load_factor = 0.75;
 
-  /**
-   * todo: use this function to restrict index accessing
-   *
-   * if (index < 0 || index >= bucket.length) {
-   *   throw new Error("Trying to access index out of bound.");
-   * }
-   */
+  // initialize bucket size
+  const initBucketSize = function defineBucketSize() {
+    for (let i = 0; i < capacity; i++) {
+      buckets.push(undefined);
+    }
+  };
+
+  const restrictIndexAccess = (indexAccess) => {
+    let index = indexAccess;
+
+    if (index < 0 || index >= buckets.length) {
+      throw new Error("Trying to access index out of bound.");
+    }
+  };
 
   const hash = (key) => {
     let hashCode = 0;
@@ -25,7 +32,7 @@ const HashMap = () => {
     const primeNumber = 31;
 
     for (let i = 0; i < ky.length; i++) {
-      hashCode = (primeNumber * hashCode + ky.charCodeAt(i)) % initialCapacity;
+      hashCode = (primeNumber * hashCode + ky.charCodeAt(i)) % capacity;
     }
 
     return hashCode;
@@ -38,6 +45,44 @@ const HashMap = () => {
     const hashCode = hash(ky);
     const bucket = buckets[hashCode];
     const bucketAsLinkedLists = linkedLists();
+
+    restrictIndexAccess(hashCode);
+    /**
+     * you want to grow your buckets when it reached the load factor
+     * that is 0.75 so if the limit length of the buckets right now is going
+     * to be 16 we want our buckets to be only at 12 hence 16*0.75 = 12
+     * the moment it reaches this 12 we need to grow our bucket size by double.
+     *
+     * so how do i implement this?
+     *
+     * // ? grow implementation
+     * if (initialCapacity * load_factor === bucket.length) {
+     *   // increase initialCapacity by double
+     *   // rehash all existing values
+     *   // set all datas together with the last operation
+     * }
+     *
+     */
+
+    const keysLength = length();
+    
+    if (capacity * loadFactor === keysLength) {
+      capacity * 2;
+      
+      for (let i = 0; i < keysLength; i++) {
+        // iterate through the buckets
+        let element = buckets[i];
+
+        // deal first with worst case scenario of it within linked lists
+        if (element.contain) {
+          // get all entries
+        }
+        // deal with average scenario
+        if (element.ky) {
+          // get all obj entries
+        }
+      }
+    }
 
     if (bucket !== undefined && bucket.contain) {
       // update existing value within linked lists
@@ -125,6 +170,16 @@ const HashMap = () => {
       return bucket.contain({ value: removedValue.ky });
     }
 
+    /**
+     * @question to my remove method
+     *
+     * is this remove method responsible
+     * for turning from linked lists containing key value pair
+     * into single object key value pair when the length is 2
+     * because the other selected key is deleted?
+     *
+     */
+
     buckets[hashCode] = undefined;
     return buckets[hashCode] === undefined;
   };
@@ -136,7 +191,6 @@ const HashMap = () => {
       // handle removed item
       if (bucket === undefined) return;
 
-
       if (bucket.contain) {
         // count the keys stored within linked lists
         count += bucket.size().count;
@@ -146,7 +200,6 @@ const HashMap = () => {
         // count the number of keys
         count++;
       }
-
     });
 
     return count;
@@ -158,7 +211,6 @@ const HashMap = () => {
 
     buckets.forEach((bucket) => {
       if (bucket === undefined) return;
-
 
       if (bucket.contain) {
         const arr = bucket.getKeys();
@@ -173,7 +225,6 @@ const HashMap = () => {
       if (bucket.ky) {
         array[index++] = bucket.ky;
       }
-
     });
 
     return array;
@@ -186,7 +237,6 @@ const HashMap = () => {
     buckets.forEach((bucket) => {
       // handle removed bucket
       if (bucket === undefined) return;
-
 
       if (bucket.contain) {
         const arr = bucket.getValues();
@@ -201,7 +251,6 @@ const HashMap = () => {
       if (bucket.val) {
         array[index++] = bucket.val;
       }
-
     });
 
     return array;
@@ -213,7 +262,6 @@ const HashMap = () => {
 
     buckets.forEach((bucket) => {
       if (bucket === undefined) return;
-
 
       if (bucket.contain) {
         let arr = bucket.getEntries();
@@ -228,13 +276,14 @@ const HashMap = () => {
       if (bucket.ky && bucket.val) {
         array[index++] = [bucket.ky, bucket.val];
       }
-
     });
 
     return array;
   };
 
   return {
+    bucketsSize,
+    bucketsAccess,
     hash,
     set,
     get,
