@@ -1,25 +1,11 @@
-import linkedLists from "./linked-lists.js";
-import Node from "./node.js";
+import linkedLists from './linked-lists.js';
+import Node from './node.js';
 
 const HashMap = () => {
   const loadFactor = 0.75;
   let capacity = 16;
   let buckets = [];
-
-  // initialize bucket size
-  const initBucketSize = function defineBucketSize() {
-    for (let i = 0; i < capacity; i++) {
-      buckets.push(undefined);
-    }
-  };
-
-  const restrictIndexAccess = (indexAccess) => {
-    let index = indexAccess;
-
-    if (index < 0 || index >= buckets.length) {
-      throw new Error("Trying to access index out of bound.");
-    }
-  };
+  let count = 0;
 
   const hash = (key) => {
     let hashCode = 0;
@@ -32,10 +18,27 @@ const HashMap = () => {
     const primeNumber = 31;
 
     for (let i = 0; i < ky.length; i++) {
-      hashCode = (primeNumber * hashCode + ky.charCodeAt(i)) % capacity;
+      let value = primeNumber * hashCode + ky.charCodeAt(i);
+      hashCode = value % capacity;
     }
 
     return hashCode;
+  };
+
+  const initBucketsSize = function defineBucketSize() {
+    for (let i = 0; i < capacity; i++) {
+      buckets.push(undefined);
+    }
+  };
+
+  // initialize bucket size
+
+  const restrictIndexAccess = (indexAccess) => {
+    let index = indexAccess;
+
+    if (index < 0 || index >= buckets.length) {
+      throw new Error('Trying to access index out of bound.');
+    }
   };
 
   const set = (key, value) => {
@@ -47,60 +50,26 @@ const HashMap = () => {
     const bucketAsLinkedLists = linkedLists();
 
     restrictIndexAccess(hashCode);
-    /**
-     * you want to grow your buckets when it reached the load factor
-     * that is 0.75 so if the limit length of the buckets right now is going
-     * to be 16 we want our buckets to be only at 12 hence 16*0.75 = 12
-     * the moment it reaches this 12 we need to grow our bucket size by double.
-     *
-     * so how do i implement this?
-     *
-     * // ? grow implementation
-     * if (initialCapacity * load_factor === bucket.length) {
-     *   // increase initialCapacity by double
-     *   // rehash all existing values
-     *   // set all datas together with the last operation
-     * }
-     *
-     */
 
-    const keysLength = length();
-    
-    if (capacity * loadFactor === keysLength) {
-      capacity * 2;
-      
-      for (let i = 0; i < keysLength; i++) {
-        // iterate through the buckets
-        let element = buckets[i];
+    const updateLinkedLists = function updateExistingValueWithinLinkedLists(
+      key,
+      value,
+    ) {
+      let ky = key,
+        val = value;
 
-        // deal first with worst case scenario of it within linked lists
-        if (element.contain) {
-          // get all entries
-        }
-        // deal with average scenario
-        if (element.ky) {
-          // get all obj entries
-        }
-      }
-    }
-
-    if (bucket !== undefined && bucket.contain) {
-      // update existing value within linked lists
       if (bucket.contain({ value: ky })) {
         bucket.set({ value: ky, assignVal: val });
-        return bucket;
       }
-
       if (!bucket.contain({ value: ky })) {
         bucket.append({ value: val, key: ky, node: Node });
-        return bucket;
       }
+    };
 
-      return bucket;
-    }
+    const collissionHandler = function useLinkedListsAsBucket(key, value) {
+      let ky = key,
+        val = value;
 
-    // handle collission using linked lists
-    if (bucket !== undefined && bucket.ky !== ky) {
       bucketAsLinkedLists.append({
         key: bucket.ky,
         value: bucket.val,
@@ -108,8 +77,35 @@ const HashMap = () => {
       });
       bucketAsLinkedLists.append({ key: ky, value: val, node: Node });
       buckets[hashCode] = bucketAsLinkedLists;
+    };
 
-      return bucketAsLinkedLists;
+    if (bucket !== undefined && bucket.contain) {
+      return updateLinkedLists(ky, val);
+    }
+
+    if (bucket !== undefined && bucket.ky !== ky) {
+      return collissionHandler(ky, val);
+    }
+
+    if (length() > (loadFactor * capacity)) {
+      // copy all buckets
+      let tmpBuckets = [];
+
+      entries().forEach((entry, index) => {
+        tmpBuckets[index] = entry;
+      });
+
+      // you want to derefer this obj
+      buckets = null;
+      buckets = [];
+      capacity *= 2;
+      initBucketsSize();
+
+      tmpBuckets.forEach((tmpBucket) => {
+        set(tmpBucket[0], tmpBucket[1]);
+      });
+
+      return buckets;
     }
 
     return (buckets[hashCode] = { ky, val });
@@ -282,8 +278,8 @@ const HashMap = () => {
   };
 
   return {
-    bucketsSize,
-    bucketsAccess,
+    initBucketsSize,
+    restrictIndexAccess,
     hash,
     set,
     get,
