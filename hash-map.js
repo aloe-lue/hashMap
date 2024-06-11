@@ -199,6 +199,13 @@ const HashMap = () => {
     return count;
   };
 
+  const clear = () => {
+    buckets = null;
+    buckets = [];
+    initBucketsSize();
+    return true;
+  };
+
   const keys = () => {
     let array = [];
     let index = 0;
@@ -284,6 +291,7 @@ const HashMap = () => {
     has,
     remove,
     length,
+    clear,
     keys,
     values,
     entries,
