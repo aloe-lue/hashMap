@@ -51,6 +51,25 @@ const HashMap = () => {
 
     restrictIndexAccess(hashCode);
 
+    if (length() > (loadFactor * capacity)) {
+      // copy all buckets
+      let tmpBuckets = [];
+      let count = 0;
+
+      entries().forEach((entry, index) => {
+        tmpBuckets[index] = entry;
+      });
+
+      buckets = null;
+      buckets = [];
+      capacity *= 2;
+      initBucketsSize();
+
+      tmpBuckets.forEach((tmpBucket) => {
+        set(tmpBucket[0], tmpBucket[1]);
+      });
+    }
+
     const updateLinkedLists = function updateExistingValueWithinLinkedLists(
       key,
       value,
@@ -85,27 +104,6 @@ const HashMap = () => {
 
     if (bucket !== undefined && bucket.ky !== ky) {
       return collissionHandler(ky, val);
-    }
-
-    if (length() > (loadFactor * capacity)) {
-      // copy all buckets
-      let tmpBuckets = [];
-
-      entries().forEach((entry, index) => {
-        tmpBuckets[index] = entry;
-      });
-
-      // you want to derefer this obj
-      buckets = null;
-      buckets = [];
-      capacity *= 2;
-      initBucketsSize();
-
-      tmpBuckets.forEach((tmpBucket) => {
-        set(tmpBucket[0], tmpBucket[1]);
-      });
-
-      return buckets;
     }
 
     return (buckets[hashCode] = { ky, val });
