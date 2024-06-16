@@ -1,4 +1,5 @@
 import HashMap from './hash-map.js';
+import HashSet from './hash-set.js';
 
 const hashMap = HashMap();
 
@@ -31,14 +32,12 @@ const testDatas = [
   { key: 'alid', value: 'im alido' },
   { key: 'bersu', value: 'im versu' },
   { key: 'nesma', value: 'im nesma' },
-  { key: 'moma', value: 'nani moma', }
+  { key: 'moma', value: 'nani moma' },
 ];
-
 hashMap.initBucketsSize();
 testDatas.forEach((data) => hashMap.set(data.key, data.value));
 
 console.log(
-  /**
   hashMap.remove('alexis'),
   hashMap.get('alexis'),
   hashMap.has('alexis'),
@@ -48,7 +47,19 @@ console.log(
   hashMap.length(),
   hashMap.keys(),
   hashMap.values(),
-
-  */
   hashMap.entries(),
+);
+
+const hashSet = HashSet();
+hashSet.initBucketsLength();
+testDatas.forEach((entry) => {
+  hashSet.set(entry.key);
+});
+console.log(
+  hashSet.remove('abida'),
+  hashSet.remove('moma'),
+  hashSet.has('abida'),
+  hashSet.remove('Carlos'),
+  hashSet.length(),
+  hashSet.keys(),
 );
