@@ -27,4 +27,8 @@ entries() returns an array that contain all key value pair within an array. </br
 
 ## hashSet
 
-probably make this with a branch
+behaves likes hashMap only does not contain values.
+
+### note
+
+remove method like get(key) values since it doesn't contain value.
